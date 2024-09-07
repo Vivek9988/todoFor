@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
 import { useTodo } from '../contexts/TodoContext';
 
-
 const TodoForm = ({ handleCloseModal }) => {
-    
-    const { addTodo } = useTodo()
-
-    
-    const add=(newTask)=>{
-        
-        addTodo({newTask})
-        
-
-    }
+    const { addTodo } = useTodo();
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -26,21 +16,21 @@ const TodoForm = ({ handleCloseModal }) => {
             return;
         }
         const newTask = { title, description, date, status, priority };
-        add(newTask)
+        addTodo(newTask);
 
         setTitle('');
         setDescription('');
         setDate('');
         setStatus('Todo');
         setPriority('Medium');
+        handleCloseModal();
     };
 
     return (
         <div className="flex flex-col items-center">
-            {/* Task creation form */}
             <div className="bg-white w-2/3 p-6 rounded-lg shadow-lg">
+                <h2 className="text-3xl mb-8">Create New Task</h2>
                 <div className="mb-4">
-                    <h2 className="text-3xl mb-8">Create New Task</h2>
                     <label className="block font-semibold mb-1">Title</label>
                     <input
                         type="text"
@@ -74,7 +64,8 @@ const TodoForm = ({ handleCloseModal }) => {
                     <select
                         className="w-full p-2 border border-gray-300 rounded"
                         value={status}
-                        onChange={(e) => setStatus(e.target.value)}>
+                        onChange={(e) => setStatus(e.target.value)}
+                    >
                         <option value="Todo">Todo</option>
                         <option value="InProgress">In Progress</option>
                         <option value="Complete">Complete</option>
@@ -86,7 +77,8 @@ const TodoForm = ({ handleCloseModal }) => {
                     <select
                         className="w-full p-2 border border-gray-300 rounded"
                         value={priority}
-                        onChange={(e) => setPriority(e.target.value)}>
+                        onChange={(e) => setPriority(e.target.value)}
+                    >
                         <option value="Low">Low</option>
                         <option value="Medium">Medium</option>
                         <option value="High">High</option>
@@ -96,12 +88,14 @@ const TodoForm = ({ handleCloseModal }) => {
                 <div className="flex justify-end gap-4">
                     <button
                         className="bg-gray-400 text-white px-4 py-2 rounded"
-                        onClick={handleCloseModal}>
+                        onClick={handleCloseModal}
+                    >
                         Cancel
                     </button>
                     <button
                         className="bg-violet-800 text-white px-4 py-2 rounded"
-                        onClick={handleCreateTaskClick}>
+                        onClick={handleCreateTaskClick}
+                    >
                         Create Task
                     </button>
                 </div>
