@@ -1,18 +1,32 @@
 import React, { useState } from 'react';
+import { useTodo } from '../contexts/TodoContext';
+
 
 const TodoForm = ({ handleCloseModal }) => {
+    
+    const { addTodo } = useTodo()
+
+    
+    const add=(newTask)=>{
+        
+        addTodo({newTask})
+        
+
+    }
+
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [date, setDate] = useState('');
     const [status, setStatus] = useState('Todo');
     const [priority, setPriority] = useState('Medium');
 
-    const handleCreateTask = () => {
+    const handleCreateTaskClick = () => {
         if (!title || !description || !date) {
             alert('Please fill all fields');
             return;
         }
         const newTask = { title, description, date, status, priority };
+        add(newTask)
 
         setTitle('');
         setDescription('');
@@ -87,7 +101,7 @@ const TodoForm = ({ handleCloseModal }) => {
                     </button>
                     <button
                         className="bg-violet-800 text-white px-4 py-2 rounded"
-                        onClick={handleCreateTask}>
+                        onClick={handleCreateTaskClick}>
                         Create Task
                     </button>
                 </div>

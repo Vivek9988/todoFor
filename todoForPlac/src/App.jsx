@@ -1,20 +1,50 @@
 import React, { useState } from 'react';
 import Navbar from './Components/Navbar';
 import TodoForm from './Components/TodoForm';
+import TodoItem from './Components/TodoList';
+import { TodoProvider } from './contexts/TodoContext'
 
 const App = () => {
   const [showTaskForm, setShowTaskForm] = useState(false);
+  const[todos, setTodos] = useState([])
 
   const handleCreateTaskClick = () => {
     setShowTaskForm(true);
   };
 
   const handleCloseModal = () => {
-    setShowTaskForm(false); // Close the modal
+    setShowTaskForm(false); 
   };
+  
+
+  const addTodo = (todo) => {
+    setTodos((prev) => [{ id: Date.now(), ...todo }, ...prev])
+
+  }
+
+
+  const updateTodo = (id, todo) => {
+    setTodos((prev) => prev.map((prevTodo) => (prevTodo.id ===
+      id ? todo : prevTodo)))
+
+  }
+
+  const deleteTodo = (id) => {
+    setTodos((prev) => prev.filter((todo) => todo.id != id))
+
+  }
+
+  const toggleComplete = (id) => {
+    setTodos((prev) => prev.map((prevTodo) => prevTodo.id ===
+      id ? { ...prevTodo, completed: !prevTodo.completed } : prevTodo))
+
+  }
+
+
 
   return (
     <>
+      <TodoProvider value={{ todos, addTodo, updateTodo, deleteTodo, toggleComplete }}>
       <Navbar />
       <div className="w-full min-h-screen flex flex-col items-center bg-slate-100">
         <div className="w-2/3 h-24 border bg-white mt-9 flex items-center justify-between px-4 rounded-xl">
@@ -35,9 +65,11 @@ const App = () => {
             <div className='text-center flex items-center justify-center bg-violet-800 text-white p-3 rounded-t-lg'>
               TODO
             </div>
-            <div className=''>
-              {/* Content here */}
-            </div>
+              {todos.map((todo123) => (
+                <div key={todo123.id} className='w-full'>
+                  <TodoItem todo={todo123} />
+                </div>
+              ))}
           </div>
 
           <div className='w-1/3'>
@@ -63,11 +95,12 @@ const App = () => {
       {/* Modal Popup */}
       {showTaskForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white w-2/3 p-6 rounded-lg shadow-lg">
+          <div className="bg-white w-2/3 rounded-lg shadow-lg">
             <TodoForm handleCloseModal={handleCloseModal} />
           </div>
         </div>
       )}
+      </TodoProvider>
     </>
   );
 };
