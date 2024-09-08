@@ -33,7 +33,6 @@ function TodoList({ todo }) {
         setShowPriorityDropdown(false);
     };
 
-    // Close the dropdown if clicked outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (event.target.closest('.priority-dropdown') === null) {
@@ -46,7 +45,7 @@ function TodoList({ todo }) {
     }, []);
 
     return (
-        <div className={`flex flex-col border border-black/10 rounded-lg px-3 py-3 gap-y-3 shadow-sm duration-300 text-black ${todo.completed ? 'bg-[#c6e9a7]' : 'bg-[#ccbed7]'}`}>
+        <div className={`flex flex-col border border-black/10 rounded-lg px-3 py-2 gap-y-3 shadow-sm duration-300 text-black ${todo.completed ? 'bg-[#c6e9a7]' : 'bg-'} mt-4`} style={{ maxWidth: '300px', padding: '1rem' }}>
             <div className="flex items-center gap-x-3 mb-3 justify-between">
                 {/* Priority Button with Dropdown */}
                 <div className="relative flex items-center gap-x-3 priority-dropdown">
@@ -121,7 +120,6 @@ function TodoList({ todo }) {
                 />
             </div>
 
-            {/* Edit and Delete Buttons */}
             <div className="flex justify-between mt-3 gap-x-2">
                 <button
                     className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 disabled:opacity-50"

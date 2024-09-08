@@ -35,9 +35,9 @@ const App = () => {
   };
 
   // Filter todos by status
-  const todoTodos = todos.filter(todo => todo.status === 'Todo');
-  const inProgressTodos = todos.filter(todo => todo.status === 'In Progress');
-  const completedTodos = todos.filter(todo => todo.status === 'Complete');
+  const todoTasks = todos.filter((todo) => todo.status === 'Todo');
+  const inProgressTasks = todos.filter((todo) => todo.status === 'InProgress');
+  const completedTasks = todos.filter((todo) => todo.status === 'Complete');
 
   return (
     <>
@@ -58,31 +58,44 @@ const App = () => {
 
           {/* Main Page Content */}
           <div className='w-2/3 mt-4 flex gap-4'>
-            <div className='w-1/3'>
+            <div className={`w-1/3 ${todoTasks.length > 0 ? 'bg-white' : ''} h-full `}>
               <div className='text-center flex items-center justify-center bg-violet-800 text-white p-3 rounded-t-lg'>
                 TODO
               </div>
-              {todoTodos.map((todo) => (
-                <TodoList key={todo.id} todo={todo} />
-              ))}
+              <div className='justify-center flex p-3 '>
+                <div className='gap-4'>
+                  {todoTasks.map((todo) => (
+                    <TodoList key={todo.id} todo={todo} />
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className='w-1/3'>
+            <div className={`w-1/3 ${inProgressTasks.length > 0 ? 'bg-white' : ''} h-full `}>
               <div className='text-center flex items-center justify-center bg-yellow-300 text-white p-3 rounded-t-lg'>
                 IN PROGRESS
               </div>
-              {inProgressTodos.map((todo) => (
-                <TodoList key={todo.id} todo={todo} />
-              ))}
+
+              <div className='justify-center flex'>
+                <div className='p- gap-4 '>
+                  {inProgressTasks.map((todo) => (
+                    <TodoList key={todo.id} todo={todo} />
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className='w-1/3'>
+            <div className={`w-1/3 ${completedTasks.length > 0 ? 'bg-white' : ''} h-full`}>
               <div className='text-center flex items-center justify-center bg-green-600 text-white p-3 rounded-t-lg'>
                 COMPLETED
               </div>
-              {completedTodos.map((todo) => (
-                <TodoList key={todo.id} todo={todo} />
-              ))}
+              <div className='justify-center flex'>
+                <div className='p- gap-4'>
+                  {completedTasks.map((todo) => (
+                    <TodoList key={todo.id} todo={todo} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
