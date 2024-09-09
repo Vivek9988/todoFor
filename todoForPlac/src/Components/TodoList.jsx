@@ -11,7 +11,7 @@ function TodoList({ todo }) {
     const [priority, setPriority] = useState(todo.priority);
     const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
 
-    const { updateTodo, deleteTodo, toggleComplete } = useTodo();
+    const { updateTodo, deleteTodo } = useTodo();
 
     const editTodo = async () => {
         const updatedTodo = {
@@ -31,8 +31,13 @@ function TodoList({ todo }) {
         setIsTodoEditable(false);
     };
 
-    const toggleCompleted = () => {
-        toggleComplete(todo.id);
+    const handleDelete = async () => {
+        try {
+            await deleteTodoFromFirestore(todo.id);
+            deleteTodo(todo.id);
+        } catch (e) {
+            console.error("Error deleting document: ", e);
+        }
     };
 
     const handlePriorityChange = (newPriority) => {
@@ -40,12 +45,16 @@ function TodoList({ todo }) {
         setShowPriorityDropdown(false);
     };
 
-    const handleDelete = async () => {
-        try {
-            await deleteTodoFromFirestore(todo.id);
-            deleteTodo(todo.id);
-        } catch (e) {
-            console.error("Error deleting document: ", e);
+    const getPriorityStyles = (prio) => {
+        switch (prio) {
+            case 'High':
+                return 'bg-[#FFECE1] text-[#FF5C00]'; // Light Orange background with dark orange text
+            case 'Medium':
+                return 'bg-[#FFF0FF] text-[#FF00B8]'; // Light Pink background with hot pink text
+            case 'Low':
+                return 'bg-[#F0FFDD] text-[#8A8A8A]'; // Light Green background with gray text
+            default:
+                return '';
         }
     };
 
@@ -60,67 +69,45 @@ function TodoList({ todo }) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const getPriorityStyles = (prio) => {
-        switch (prio) {
-            case 'High':
-                return 'bg-[#FFECE1] text-[#FF5C00]';
-            case 'Medium':
-                return 'bg-[#FFECE1] text-[#FF00B8]';
-            case 'Low':
-                return 'bg-[#F0FFDD] text-[#8A8A8A]';
-            default:
-                return '';
-        }
-    };
-
     return (
-        <div className={`flex flex-col border border-black/10 rounded-lg px-3 py-2 gap-y-3 shadow-sm duration-300 text-black ${todo.completed ? 'bg-[#c6e9a7]' : 'bg-white'} mt-4`} style={{ maxWidth: '300px', padding: '1rem' }}>
-            <div className="flex items-center gap-x-3 mb-3 justify-between">
-                {/* Priority Button with Dropdown */}
-                <div className="relative flex items-center gap-x-3 priority-dropdown">
-                    <button
-                        className={`border outline-none px-3 py-1 rounded-lg bg-gray-50 hover:bg-gray-100 ${isTodoEditable ? 'cursor-pointer' : 'cursor-not-allowed'} ${getPriorityStyles(priority)}`}
-                        onClick={() => isTodoEditable && setShowPriorityDropdown((prev) => !prev)}
-                        disabled={!isTodoEditable}
-                    >
-                        {priority}
-                    </button>
+        <div className={`flex flex-col border border-black/10 rounded-lg px-2 py-1 gap-y-2 shadow-sm duration-300 text-black ${'bg-white'} mt-4`} style={{ maxWidth: '280px' }}>
+            {/* Priority Button with Dropdown */}
+            <div className="relative flex items-center gap-x-2 priority-dropdown">
+                <button
+                    className={`border outline-none px-2 py-1 rounded-lg bg-gray-50 hover:bg-gray-100 ${isTodoEditable ? 'cursor-pointer' : 'cursor-not-allowed'} ${getPriorityStyles(priority)}`}
+                    onClick={() => isTodoEditable && setShowPriorityDropdown((prev) => !prev)}
+                    disabled={!isTodoEditable}
+                >
+                    {priority}
+                </button>
 
-                    {showPriorityDropdown && (
-                        <ul className="absolute mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-28">
-                            {["Low", "Medium", "High"].map((prio) => (
-                                <li
-                                    key={prio}
-                                    className={`cursor-pointer px-3 py-1 hover:bg-gray-100 ${prio === priority ? 'font-bold' : ''} ${getPriorityStyles(prio)}`}
-                                    onClick={() => handlePriorityChange(prio)}
-                                >
-                                    {prio}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-
-                {/* Checkbox */}
-                <input
-                    type="checkbox"
-                    className="cursor-pointer"
-                    checked={todo.completed}
-                    onChange={toggleCompleted}
-                />
+                {showPriorityDropdown && (
+                    <ul className="absolute mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-24">
+                        {["Low", "Medium", "High"].map((prio) => (
+                            <li
+                                key={prio}
+                                className={`cursor-pointer px-2 py-1 hover:bg-gray-100 ${prio === priority ? `font-bold ${getPriorityStyles(prio)}` : ''}`}
+                                onClick={() => handlePriorityChange(prio)}
+                            >
+                                {prio}
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
 
-            <div className="flex items-center gap-x-3 mb-3">
+            {/* Title and Status */}
+            <div className="flex items-center gap-x-2 mb-2">
                 <input
                     type="text"
-                    className={`border font-semibold text-lg outline-none w-full bg-transparent rounded-lg ${isTodoEditable ? 'border-black/10 px-2' : 'border-transparent'} ${todo.completed ? 'line-through' : ''}`}
+                    className={`border font-semibold text-base outline-none w-full bg-transparent rounded-lg ${isTodoEditable ? 'border-black/10 px-1' : 'border-transparent'} ${todo.completed ? 'line-through' : ''}`}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     readOnly={!isTodoEditable}
                 />
 
                 <select
-                    className={`border outline-none rounded-lg ${isTodoEditable ? 'border-black/10 px-2' : 'border-transparent'}`}
+                    className={`border outline-none rounded-lg ${isTodoEditable ? 'border-black/10 px-1' : 'border-transparent'}`}
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                     disabled={!isTodoEditable}
@@ -131,27 +118,32 @@ function TodoList({ todo }) {
                 </select>
             </div>
 
+            {/* Description */}
             <textarea
-                className={`border outline-none w-full bg-transparent rounded-lg ${isTodoEditable ? 'border-black/10 px-2' : 'border-transparent'}`}
+                className={`border outline-none w-full bg-transparent rounded-lg ${isTodoEditable ? 'border-black/10 px-1' : 'border-transparent'}`}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 readOnly={!isTodoEditable}
             />
 
-            <div className="flex items-center gap-x-3 mb-3">
-                <label className="font-semibold"></label>
+            {/* Line Above Date Section */}
+            <hr className="border-t border-gray-300 mt-" />
+
+            {/* Date */}
+            <div className="flex items-center">
                 <input
                     type="date"
-                    className={`border outline-none rounded-lg ${isTodoEditable ? 'border-black/10 px-2' : 'border-transparent'}`}
+                    className={`border outline-none rounded-lg ${isTodoEditable ? 'border-black/10 px-1' : 'border-transparent'}`}
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     readOnly={!isTodoEditable}
                 />
             </div>
 
-            <div className="flex justify-between mt-3 gap-x-2">
+            {/* Edit and Delete Controls */}
+            <div className="flex justify-between gap-x-1 mt-2">
                 <button
-                    className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 disabled:opacity-50"
+                    className="inline-flex w-7 h-7 rounded-lg text-xs border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 disabled:opacity-50"
                     onClick={() => {
                         if (todo.completed) return;
                         if (isTodoEditable) {
@@ -164,7 +156,7 @@ function TodoList({ todo }) {
                 </button>
 
                 <button
-                    className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100"
+                    className="inline-flex w-7 h-7 rounded-lg text-xs border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100"
                     onClick={handleDelete}
                 >
                     ❌

@@ -77,11 +77,11 @@ const App = () => {
 
           {/* Main Page Content */}
           <div className='w-2/3 mt-4 flex gap-4'>
-            <div className={`w-1/3 ${todoTasks.length > 0 ? 'bg-white' : ''} h-full `}>
+            <div className={`w-1/3 ${todoTasks.length > 0 ? 'bg-white' : ''} h-full rounded-b-lg`}>
               <div className='text-center flex items-center justify-center bg-violet-700 text-white p-3 rounded-t-lg'>
                 TODO
               </div>
-              <div className='justify-center flex  '>
+              <div className='justify-center flex mb-2 '>
                 <div className='gap-4'>
                   {todoTasks.map((todo) => (
                     <TodoList key={todo.id} todo={todo} />
@@ -90,13 +90,13 @@ const App = () => {
               </div>
             </div>
 
-            <div className={`w-1/3 ${inProgressTasks.length > 0 ? 'bg-white' : ''} h-full `}>
+            <div className={`w-1/3 ${inProgressTasks.length > 0 ? 'bg-white' : ''} h-full rounded-b-lg `}>
               <div className='text-center flex items-center justify-center bg-yellow-300 text-white p-3 rounded-t-lg'>
                 IN PROGRESS
               </div>
 
-              <div className='justify-center flex'>
-                <div className='p- gap-4 '>
+              <div className='justify-center flex mb-2'>
+                <div className=' gap-4 '>
                   {inProgressTasks.map((todo) => (
                     <TodoList key={todo.id} todo={todo} />
                   ))}
@@ -104,11 +104,11 @@ const App = () => {
               </div>
             </div>
 
-            <div className={`w-1/3 ${completedTasks.length > 0 ? 'bg-white' : ''} h-full`}>
+            <div className={`w-1/3 ${completedTasks.length > 0 ? 'bg-white' : ''} h-full rounded-b-lg`}>
               <div className='text-center flex items-center justify-center bg-green-500 text-white p-3 rounded-t-lg'>
                 COMPLETED
               </div>
-              <div className='justify-center flex'>
+              <div className='justify-center flex mb-2'>
                 <div className='p- gap-4'>
                   {completedTasks.map((todo) => (
                     <TodoList key={todo.id} todo={todo} />
