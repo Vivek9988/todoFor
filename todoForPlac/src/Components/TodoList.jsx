@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTodo } from '../contexts/TodoContext';
+import { deleteTodoFromFirestore, updateTodoInFirestore } from '../firebase';
 
 function TodoList({ todo }) {
     const [isTodoEditable, setIsTodoEditable] = useState(false);
@@ -12,15 +13,21 @@ function TodoList({ todo }) {
 
     const { updateTodo, deleteTodo, toggleComplete } = useTodo();
 
-    const editTodo = () => {
-        updateTodo(todo.id, {
-            ...todo,
+    const editTodo = async () => {
+        const updatedTodo = {
             title,
             description,
             date,
             status,
             priority,
-        });
+            completed: todo.completed
+        };
+        try {
+            await updateTodoInFirestore(todo.id, updatedTodo);
+            updateTodo(todo.id, updatedTodo);
+        } catch (e) {
+            console.error("Error updating document: ", e);
+        }
         setIsTodoEditable(false);
     };
 
@@ -31,6 +38,15 @@ function TodoList({ todo }) {
     const handlePriorityChange = (newPriority) => {
         setPriority(newPriority);
         setShowPriorityDropdown(false);
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteTodoFromFirestore(todo.id);
+            deleteTodo(todo.id);
+        } catch (e) {
+            console.error("Error deleting document: ", e);
+        }
     };
 
     useEffect(() => {
@@ -44,13 +60,26 @@ function TodoList({ todo }) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const getPriorityStyles = (prio) => {
+        switch (prio) {
+            case 'High':
+                return 'bg-[#FFECE1] text-[#FF5C00]';
+            case 'Medium':
+                return 'bg-[#FFECE1] text-[#FF00B8]';
+            case 'Low':
+                return 'bg-[#F0FFDD] text-[#8A8A8A]';
+            default:
+                return '';
+        }
+    };
+
     return (
-        <div className={`flex flex-col border border-black/10 rounded-lg px-3 py-2 gap-y-3 shadow-sm duration-300 text-black ${todo.completed ? 'bg-[#c6e9a7]' : 'bg-'} mt-4`} style={{ maxWidth: '300px', padding: '1rem' }}>
+        <div className={`flex flex-col border border-black/10 rounded-lg px-3 py-2 gap-y-3 shadow-sm duration-300 text-black ${todo.completed ? 'bg-[#c6e9a7]' : 'bg-white'} mt-4`} style={{ maxWidth: '300px', padding: '1rem' }}>
             <div className="flex items-center gap-x-3 mb-3 justify-between">
                 {/* Priority Button with Dropdown */}
                 <div className="relative flex items-center gap-x-3 priority-dropdown">
                     <button
-                        className={`border outline-none px-3 py-1 rounded-lg bg-gray-50 hover:bg-gray-100 ${isTodoEditable ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                        className={`border outline-none px-3 py-1 rounded-lg bg-gray-50 hover:bg-gray-100 ${isTodoEditable ? 'cursor-pointer' : 'cursor-not-allowed'} ${getPriorityStyles(priority)}`}
                         onClick={() => isTodoEditable && setShowPriorityDropdown((prev) => !prev)}
                         disabled={!isTodoEditable}
                     >
@@ -62,7 +91,7 @@ function TodoList({ todo }) {
                             {["Low", "Medium", "High"].map((prio) => (
                                 <li
                                     key={prio}
-                                    className={`cursor-pointer px-3 py-1 hover:bg-gray-100 ${prio === priority ? 'font-bold' : ''}`}
+                                    className={`cursor-pointer px-3 py-1 hover:bg-gray-100 ${prio === priority ? 'font-bold' : ''} ${getPriorityStyles(prio)}`}
                                     onClick={() => handlePriorityChange(prio)}
                                 >
                                     {prio}
@@ -136,7 +165,7 @@ function TodoList({ todo }) {
 
                 <button
                     className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100"
-                    onClick={() => deleteTodo(todo.id)}
+                    onClick={handleDelete}
                 >
                     ❌
                 </button>
