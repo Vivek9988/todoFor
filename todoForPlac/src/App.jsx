@@ -3,7 +3,7 @@ import Navbar from './Components/Navbar';
 import TodoForm from './Components/TodoForm';
 import TodoList from './Components/TodoList';
 import { TodoProvider } from './contexts/TodoContext';
-import { fetchTodos, addTodoToFirestore } from './firebase'; // Import Firestore helper functions
+import { fetchTodos, addTodoToFirestore, updateTodoInFirestore } from './firebase'; // Import Firestore helper functions
 
 const App = () => {
   const [showTaskForm, setShowTaskForm] = useState(false);
@@ -31,6 +31,16 @@ const App = () => {
     }
   };
 
+  // Update existing todo and Firestore
+  const updateTodo = async (id, updatedTodo) => {
+    try {
+      await updateTodoInFirestore(id, updatedTodo); // Update Firestore
+      setTodos((prev) => prev.map((todo) => (todo.id === id ? { ...todo, ...updatedTodo } : todo)));
+    } catch (e) {
+      console.error("Error updating document: ", e);
+    }
+  };
+
   const handleCreateTaskClick = () => {
     setShowTaskForm(true);
   };
@@ -39,12 +49,13 @@ const App = () => {
     setShowTaskForm(false);
   };
 
-  const updateTodo = (id, todo) => {
-    setTodos((prev) => prev.map((prevTodo) => (prevTodo.id === id ? todo : prevTodo)));
-  };
-
-  const deleteTodo = (id) => {
-    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+  const deleteTodo = async (id) => {
+    try {
+      await deleteTodoFromFirestore(id); // Update Firestore
+      setTodos((prev) => prev.filter((todo) => todo.id !== id));
+    } catch (e) {
+      console.error("Error deleting document: ", e);
+    }
   };
 
   const toggleComplete = (id) => {
@@ -122,7 +133,7 @@ const App = () => {
         {/* Modal Popup */}
         {showTaskForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white w-2/3 rounded-lg shadow-lg">
+            <div className=" w-2/3 rounded-lg shadow-lg">
               <TodoForm handleCloseModal={handleCloseModal} />
             </div>
           </div>

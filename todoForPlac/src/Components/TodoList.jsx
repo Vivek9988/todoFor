@@ -74,15 +74,15 @@ function TodoList({ todo }) {
             {/* Priority Button with Dropdown */}
             <div className="relative flex items-center gap-x-2 priority-dropdown">
                 <button
-                    className={`border outline-none px-2 py-1 rounded-lg bg-gray-50 hover:bg-gray-100 ${isTodoEditable ? 'cursor-pointer' : 'cursor-not-allowed'} ${getPriorityStyles(priority)}`}
+                    className={`border outline-none px-2 py-1 rounded-lg ${isTodoEditable ? 'cursor-pointer' : 'cursor-not-allowed'} ${getPriorityStyles(priority)}`}
                     onClick={() => isTodoEditable && setShowPriorityDropdown((prev) => !prev)}
                     disabled={!isTodoEditable}
                 >
-                    {priority}
+                    {priority || 'Priority'}
                 </button>
 
                 {showPriorityDropdown && (
-                    <ul className="absolute mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-24">
+                    <ul className="absolute mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 w-24 priority-dropdown">
                         {["Low", "Medium", "High"].map((prio) => (
                             <li
                                 key={prio}
@@ -150,7 +150,6 @@ function TodoList({ todo }) {
                             editTodo();
                         } else setIsTodoEditable((prev) => !prev);
                     }}
-                    disabled={todo.completed}
                 >
                     {isTodoEditable ? '📁' : '✏️'}
                 </button>
