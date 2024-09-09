@@ -4,13 +4,13 @@ import { getAnalytics } from "firebase/analytics";
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCvRT7XntvafSCVqKnO33kVTGPQCSe2Hpw",
-    authDomain: "kanban-ba70e.firebaseapp.com",
-    projectId: "kanban-ba70e",
-    storageBucket: "kanban-ba70e.appspot.com",
-    messagingSenderId: "798409574824",
-    appId: "1:798409574824:web:d8464b4261bf05fe60b59d",
-    measurementId: "G-DXYBPM49G0"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase app and services
