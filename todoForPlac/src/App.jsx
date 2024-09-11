@@ -73,9 +73,9 @@ const App = () => {
     <>
       <TodoProvider value={{ todos, addTodo, updateTodo, deleteTodo, toggleComplete }}>
         <Navbar />
-        <div className="w-full min-h-screen flex flex-col items-center bg-slate-100">
-          <div className="w-2/3 h-24 border bg-white mt-9 flex items-center justify-between px-4 rounded-xl">
-            <div className='font-semibold text-xl'>
+        <div className="w-full min-h-screen flex flex-col items-center bg-slate-100 px-4">
+          <div className="w-full sm:w-2/3 h-24 border bg-white mt-9 flex items-center justify-between px-4 rounded-xl">
+            <div className='font-semibold text-xl text-center'>
               Desktop And Mobile Application
             </div>
             <button
@@ -87,8 +87,8 @@ const App = () => {
           </div>
 
           {/* Main Page Content */}
-          <div className='w-2/3 mt-4 flex gap-4'>
-            <div className={`w-1/3 ${todoTasks.length > 0 ? 'bg-white' : ''} h-full rounded-b-lg`}>
+          <div className='w-full sm:w-2/3 mt-4 flex flex-col sm:flex-row gap-4'>
+            <div className={`w-full sm:w-1/3 ${todoTasks.length > 0 ? 'bg-white' : ''} h-full rounded-b-lg`}>
               <div className='text-center flex items-center justify-center bg-violet-700 text-white p-3 rounded-t-lg'>
                 TODO
               </div>
@@ -101,13 +101,12 @@ const App = () => {
               </div>
             </div>
 
-            <div className={`w-1/3 ${inProgressTasks.length > 0 ? 'bg-white' : ''} h-full rounded-b-lg `}>
+            <div className={`w-full sm:w-1/3 ${inProgressTasks.length > 0 ? 'bg-white' : ''} h-full rounded-b-lg`}>
               <div className='text-center flex items-center justify-center bg-yellow-300 text-white p-3 rounded-t-lg'>
                 IN PROGRESS
               </div>
-
               <div className='justify-center flex mb-2'>
-                <div className=' gap-4 '>
+                <div className='gap-4'>
                   {inProgressTasks.map((todo) => (
                     <TodoList key={todo.id} todo={todo} />
                   ))}
@@ -115,12 +114,12 @@ const App = () => {
               </div>
             </div>
 
-            <div className={`w-1/3 ${completedTasks.length > 0 ? 'bg-white' : ''} h-full rounded-b-lg`}>
+            <div className={`w-full sm:w-1/3 ${completedTasks.length > 0 ? 'bg-white' : ''} h-full rounded-b-lg`}>
               <div className='text-center flex items-center justify-center bg-green-500 text-white p-3 rounded-t-lg'>
                 COMPLETED
               </div>
               <div className='justify-center flex mb-2'>
-                <div className='p- gap-4'>
+                <div className='gap-4'>
                   {completedTasks.map((todo) => (
                     <TodoList key={todo.id} todo={todo} />
                   ))}
@@ -133,7 +132,7 @@ const App = () => {
         {/* Modal Popup */}
         {showTaskForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className=" w-2/3 rounded-lg shadow-lg">
+            <div className="w-full sm:w-2/3 rounded-lg shadow-lg">
               <TodoForm handleCloseModal={handleCloseModal} />
             </div>
           </div>
