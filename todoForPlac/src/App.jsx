@@ -3,7 +3,7 @@ import Navbar from './Components/Navbar';
 import TodoForm from './Components/TodoForm';
 import TodoList from './Components/TodoList';
 import { TodoProvider } from './contexts/TodoContext';
-import { fetchTodos, addTodoToFirestore, updateTodoInFirestore } from './firebase'; // Import Firestore helper functions
+import { fetchTodos, addTodoToFirestore, updateTodoInFirestore, deleteTodoFromFirestore } from './firebase'; // Add deleteTodoFromFirestore to the imports
 
 const App = () => {
   const [showTaskForm, setShowTaskForm] = useState(false);
